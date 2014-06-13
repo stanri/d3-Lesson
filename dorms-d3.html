@@ -78,23 +78,23 @@ $(function() {
                 .attr("height", barHeight * mitPressureSurvey.length * 3);
     
     var binding = chart.selectAll("g").data(mitPressureSurvey); //group element in SVG is known as g, like a div in html
-    
+                
     var bar = binding.enter()
         .append("g") //making new g's
         .attr("transform", function(d, i) { 
-            return "translate(0, " + (3*i*barHeight) + ")"; //place the bars along the length.
+            return "translate(0, " + (3*i*barHeight + 20) + ")"; //place the bars along the length.
         });
     
     var bar2 = binding.enter()
         .append("g") //making new g's
         .attr("transform", function(d, i) { 
-            return "translate(0, " + (3*i*barHeight + barHeight) + ")"; //place the bars along the length.
+            return "translate(0, " + (3*i*barHeight + barHeight + 20) + ")"; //place the bars along the length.
         });
     
     var bar3 = binding.enter()
         .append("g") //making new g's
         .attr("transform", function(d, i) { 
-            return "translate(0, " + (3*i*barHeight + 2*barHeight) + ")"; //place the bars along the length.
+            return "translate(0, " + (3*i*barHeight + 2*barHeight + 20) + ")"; //place the bars along the length.
         });
     
     bar.append("rect")
@@ -116,6 +116,42 @@ $(function() {
         .attr("x", 3)
         .attr("y", barHeight/2 + 3)
         .text(function(d) {return d.dorm;});
+    
+    chart.append("rect")
+        .attr("transform", 'translate(0, 0)')
+        .attr("id", "legend1")
+        .attr("width", width/3)
+        .attr("height", barHeight - 1)
+        .attr('fill', 'steelblue');
+    
+    chart.append("rect")
+        .attr("transform", 'translate(' + width/3 + ', 0)')
+        .attr("id", "legend2")
+        .attr("width", width/3)
+        .attr("height", barHeight - 1)
+        .attr('fill', '#d13349');
+    
+    chart.append("rect")
+        .attr("transform", 'translate(' + (2 * width)/3 + ', 0)')
+        .attr("id", "legend3")
+        .attr("width", width/3)
+        .attr("height", barHeight - 1)
+        .attr('fill', '#36b42c');
+    
+    chart.append("text")
+        .attr("x", 3)
+        .attr("y", barHeight/2 + 3)
+        .text('happierThanAvg');
+    
+    chart.append("text")
+        .attr("x", 3 + (width/3))
+        .attr("y", barHeight/2 + 3)
+        .text('extroverted');
+    
+    chart.append("text")
+        .attr("x", 3 + ((2*width)/3))
+        .attr("y", barHeight/2 + 3)
+        .text('happierThanAvg');
 });
 
 </script>
