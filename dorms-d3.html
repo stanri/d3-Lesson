@@ -4,15 +4,15 @@
 <title>6.MITx d3 activity - MIT dorm pressure survey</title>
 
 <style>
-.happiness {
-  fill: steelblue;
+.happiness, #legend0 {
+  fill: #4682b4;
 }
     
-.extro {
+.extro, #legend1 {
   fill: #d13349;
 }
     
-.workLife {
+.workLife, #legend2 {
   fill: #36b42c;
 }  
 
@@ -59,6 +59,8 @@ var mitPressureSurvey = [
 {dorm: 'Westgate', happierThanAvg: 43, extroverted: 30, workLifeBalance: 43}
 ]
 
+var legendKeys = ['happierThanAvg', 'extroverted', 'workLifeBalance']
+
 var width = 420
 var barHeight = 20;
 
@@ -75,27 +77,36 @@ var scaleFunction = d3.scale.linear().domain([0, 100]).range([0, width]);
 $(function() {
     var chart = d3.select("#d3chart") //root
                 .attr("width", width)
-                .attr("height", barHeight * mitPressureSurvey.length * 3);
+                .attr("height", barHeight * mitPressureSurvey.length * 3 + barHeight); //multiply by 3 to account for each of the bars needed for each dorm. add barHeight to account for the legend bar.
     
     var binding = chart.selectAll("g").data(mitPressureSurvey); //group element in SVG is known as g, like a div in html
+    var legendBinding = chart.selectAll("g").data(legendKeys);
                 
-    var bar = binding.enter()
+    var bar = binding.enter() //group for the happierThanAvg bars.
         .append("g") //making new g's
         .attr("transform", function(d, i) { 
             return "translate(0, " + (3*i*barHeight + 20) + ")"; //place the bars along the length.
         });
     
-    var bar2 = binding.enter()
+    var bar2 = binding.enter() //group for the extroverted bars.
         .append("g") //making new g's
         .attr("transform", function(d, i) { 
             return "translate(0, " + (3*i*barHeight + barHeight + 20) + ")"; //place the bars along the length.
         });
     
-    var bar3 = binding.enter()
+    var bar3 = binding.enter() //group for the workLifeBalance bars.
         .append("g") //making new g's
         .attr("transform", function(d, i) { 
             return "translate(0, " + (3*i*barHeight + 2*barHeight + 20) + ")"; //place the bars along the length.
         });
+    
+    var bar4 = legendBinding.enter() //group for legend bars
+        .append("g")
+        .attr('id', function(d, i) {return 'legend' + i;})
+        .attr("transform", function(d, i) {
+            console.log(i);
+            return 'translate(' + i*(width/3) + ', 0)'; //place the bars next to each other in x but on the top of the svg container
+        });       
     
     bar.append("rect")
         .attr("class", "happiness")
@@ -112,46 +123,20 @@ $(function() {
         .attr("width", function(d) { return scaleFunction(d.workLifeBalance); })
         .attr("height", barHeight - 1);
     
+    bar4.append("rect")
+        .attr("width", width/3)
+        .attr("height", barHeight - 1)
+    
     bar.append("text")
         .attr("x", 3)
         .attr("y", barHeight/2 + 3)
         .text(function(d) {return d.dorm;});
     
-    chart.append("rect")
-        .attr("transform", 'translate(0, 0)')
-        .attr("id", "legend1")
-        .attr("width", width/3)
-        .attr("height", barHeight - 1)
-        .attr('fill', 'steelblue');
-    
-    chart.append("rect")
-        .attr("transform", 'translate(' + width/3 + ', 0)')
-        .attr("id", "legend2")
-        .attr("width", width/3)
-        .attr("height", barHeight - 1)
-        .attr('fill', '#d13349');
-    
-    chart.append("rect")
-        .attr("transform", 'translate(' + (2 * width)/3 + ', 0)')
-        .attr("id", "legend3")
-        .attr("width", width/3)
-        .attr("height", barHeight - 1)
-        .attr('fill', '#36b42c');
-    
-    chart.append("text")
-        .attr("x", 3)
+    bar4.append("text")
+        .attr("x", 3) //use 3 instead of 3 + (i*width/3) in a function since text is now based on rectangle, not the container.
         .attr("y", barHeight/2 + 3)
-        .text('happierThanAvg');
-    
-    chart.append("text")
-        .attr("x", 3 + (width/3))
-        .attr("y", barHeight/2 + 3)
-        .text('extroverted');
-    
-    chart.append("text")
-        .attr("x", 3 + ((2*width)/3))
-        .attr("y", barHeight/2 + 3)
-        .text('happierThanAvg');
+        .text(function(d) {return d.toString();});
+
 });
 
 </script>
