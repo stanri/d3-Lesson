@@ -4,9 +4,17 @@
 <title>6.MITx d3 activity - MIT dorm pressure survey</title>
 
 <style>
-.chart rect {
+.happiness {
   fill: steelblue;
 }
+    
+.extro {
+  fill: #d13349;
+}
+    
+.workLife {
+  fill: #36b42c;
+}  
 
 .chart text {
   fill: white;
@@ -54,14 +62,60 @@ var mitPressureSurvey = [
 var width = 420
 var barHeight = 20;
 
-// utility function that maps [0 to 100] to [0, width]
+// scale is a utility function that maps [0 to 100] to [0, width]
+// linear: makes the scaling of the mapping of the sets linear.
 // draw this on the board as a map of two lines
+// ex: scaleFunction(100) gives 420, scaleFunction(50) gives 210
+// you can pass into scaleFunction because the stuff on the right returns a mapping function!
 var scaleFunction = d3.scale.linear().domain([0, 100]).range([0, width]);
 
-
+    
 // jQuery magic to run this code after your page loads
+// svg container will be 420 wide and 23*20 long/tall
 $(function() {
-  // insert your code here
+    var chart = d3.select("#d3chart") //root
+                .attr("width", width)
+                .attr("height", barHeight * mitPressureSurvey.length * 3);
+    
+    var binding = chart.selectAll("g").data(mitPressureSurvey); //group element in SVG is known as g, like a div in html
+    
+    var bar = binding.enter()
+        .append("g") //making new g's
+        .attr("transform", function(d, i) { 
+            return "translate(0, " + (3*i*barHeight) + ")"; //place the bars along the length.
+        });
+    
+    var bar2 = binding.enter()
+        .append("g") //making new g's
+        .attr("transform", function(d, i) { 
+            return "translate(0, " + (3*i*barHeight + barHeight) + ")"; //place the bars along the length.
+        });
+    
+    var bar3 = binding.enter()
+        .append("g") //making new g's
+        .attr("transform", function(d, i) { 
+            return "translate(0, " + (3*i*barHeight + 2*barHeight) + ")"; //place the bars along the length.
+        });
+    
+    bar.append("rect")
+        .attr("class", "happiness")
+        .attr("width", function(d) { return scaleFunction(d.happierThanAvg); })
+        .attr("height", barHeight - 1);
+    
+    bar2.append("rect")
+        .attr("class", "extro")
+        .attr("width", function(d) { return scaleFunction(d.extroverted); })
+        .attr("height", barHeight - 1);
+    
+    bar3.append("rect")
+        .attr("class", "workLife")
+        .attr("width", function(d) { return scaleFunction(d.workLifeBalance); })
+        .attr("height", barHeight - 1);
+    
+    bar.append("text")
+        .attr("x", 3)
+        .attr("y", barHeight/2 + 3)
+        .text(function(d) {return d.dorm;});
 });
 
 </script>

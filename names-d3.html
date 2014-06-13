@@ -25,7 +25,23 @@ var students = [
 
 // jQuery magic to run this code after your page loads
 $(function() {
-  // insert your code here
+//	for (i in students) {
+//		var name = students[i];
+//		var length = name.length;
+//		$('#studentRoster').append('<div style="font-size: ' + 2*length + 'px;">' + name + '</div>');
+//	}
+	var root = d3.select('#studentRoster'); //select a root. here, it's pointing to <div id='studentRoster'> below.
+	var binding = root.selectAll("div").data(students); //each div should correspond to one element of students. create a binding/matching. pass in dom side to other (root.selectAll("div")) and pass in data side to data (list of stuff)
+	
+	//when you run for the first time, for every element of data that you see, append a div tag to root with text in .text()
+	binding.enter() //this is known as chaining.
+		.append('div')
+		.text(function(d) { 
+			var parts = d.split(',');
+			console.log(parts);
+			return parts[1] + " " + parts[0]; 
+			}) //you need to use this function because things in d3 take in a string or a function. The function needs to return the things you want to display, and d3 will go through a for loop of the data, setting d as each element.
+		.style('font-size', function(d){ return (2 * d.length) + "px"; }) //sets style of html using css properties
 });
 
 </script>
